@@ -12,11 +12,13 @@ public class AgataMeble extends SiteMap {
             Xsoup.compile("//div[@class='m-offerBox_name']/a/@href");
 
     private final XPathEvaluator nameXPath =
-            Xsoup.compile("//h1[@class='m-typo m-typo_primary']/text()");
+            Xsoup.compile("//h1[contains(@class,'m-typo_primary')]/text()");
     private final XPathEvaluator priceXPath =
             Xsoup.compile("//div[@class='b-offer_cta ']//div[@class='m-priceBox_price m-priceBox_promo']/text()");
+    private final XPathEvaluator oldPriceXPath =
+            Xsoup.compile("//div[@class='b-offer_cta ']//span[@class='m-priceBox_oldPrice']/text()");
     private final XPathEvaluator skuXPath =
-            Xsoup.compile("//p[@class='m-typo_tertiary' and contains(text(), 'Index:')]/text()");
+            Xsoup.compile("//p[@class='m-typo_tertiary']//text()");
 
     public AgataMeble(){
         super("AgataMeble", "https://www.agatameble.pl");
@@ -30,43 +32,48 @@ public class AgataMeble extends SiteMap {
         try{
             var document = getHTMLDocument(address, 10000);
             product.name = nameXPath.evaluate(document).get().trim();
-            product.sku = skuXPath.evaluate(document).get().replace("Index:", " ").trim();
-            product.price = Double.parseDouble(priceXPath.evaluate(document).get());
+            product.sku = skuXPath.evaluate(document).get().replace("Index:", "").trim();
+            product.currentPrice = Double.parseDouble(priceXPath.evaluate(document).get().replace(',','.').replace("-", ""));
+
+            var oldPrice = oldPriceXPath.evaluate(document);
+            if(oldPrice != null && oldPrice.get() != null){
+                product.oldPrice = Double.parseDouble(oldPrice.get().replace(',','.').replace("-", ""));
+            }
         } catch (Exception e) {
 
         }
 
-        return product.sku.isEmpty() || product.name.isEmpty() || product.price <= 0 ? null : product;
+        return product.sku.isEmpty() || product.name.isEmpty() || product.currentPrice <= 0 ? null : product;
     }
 
     @Override
     protected ArrayList<String> crawlAddresses() {
         var categoriesAddresses = categoryXPath.evaluate(getHTMLDocument(shopAddress, 60000)).list();
         var addresses = new ArrayList<String>();
-
-        try {
-            for (var address : categoriesAddresses) {
-                try{
-                    var nextPageUrl = shopAddress + address;
-                    do{
-                        var document = getHTMLDocument(nextPageUrl, 30000);
-                        var urls = addressXPath.evaluate(document).list();
-
-                        if(urls != null) {
-                            for(var url : urls){
-                                addresses.add(shopAddress + url);
-                            }
-                        }
-
-                        nextPageUrl = nextPageXPath.evaluate(document).get();
-                    }while(nextPageUrl != null);
-                } catch (Exception e) {
-
-                }
-            }
-        } catch (Exception e) {
-
-        }
+        addresses.add("https://www.agatameble.pl/meble/wypoczynkowe/narozniki/tosca-naroznik-z-funkcja-tkanina-087-095");
+        //try {
+        //    for (var address : categoriesAddresses) {
+        //        try{
+        //            var nextPageUrl = shopAddress + address;
+        //            do{
+        //                var document = getHTMLDocument(nextPageUrl, 30000);
+        //                var urls = addressXPath.evaluate(document).list();
+//
+        //                if(urls != null) {
+        //                    for(var url : urls){
+        //                        addresses.add(shopAddress + url);
+        //                    }
+        //                }
+//
+        //                nextPageUrl = nextPageXPath.evaluate(document).get();
+        //            }while(nextPageUrl != null);
+        //        } catch (Exception e) {
+//
+        //        }
+        //    }
+        //} catch (Exception e) {
+//
+        //}
 
         return addresses;
     }
