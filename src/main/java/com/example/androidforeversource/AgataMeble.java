@@ -14,7 +14,7 @@ public class AgataMeble extends SiteMap {
             Xsoup.compile("//div[@class='m-offerBox_name']/a/@href");
 
     private final XPathEvaluator nameXPath =
-            Xsoup.compile("//h1[@class='m-typo m-typo_primary']/text()");
+            Xsoup.compile("//h1[contains(@class,'m-typo_primary')]/text()");
     private final XPathEvaluator priceXPath =
             Xsoup.compile("//div[@class='b-offer_cta ']//div[@class='m-priceBox_price m-priceBox_promo']/text()");
     private final XPathEvaluator oldPriceXPath =
@@ -37,7 +37,6 @@ public class AgataMeble extends SiteMap {
         try{
             var document = getHTMLDocument(address, 10000);
             product.name = nameXPath.evaluate(document).get().trim();
-            product.sku = skuXPath.evaluate(document).get().replace("Index:", " ").trim();
             product.sku = skuXPath.evaluate(document).get().replace("Index:", "").trim();
             product.currentPrice = Double.parseDouble(priceXPath.evaluate(document).get().replace(',','.').replace("-", ""));
 
@@ -63,7 +62,6 @@ public class AgataMeble extends SiteMap {
     protected ArrayList<String> crawlAddresses() {
         var categoriesAddresses = categoryXPath.evaluate(getHTMLDocument(shopAddress, 60000)).list();
         var addresses = new ArrayList<String>();
-
         try {
             for (var address : categoriesAddresses) {
                 try{
