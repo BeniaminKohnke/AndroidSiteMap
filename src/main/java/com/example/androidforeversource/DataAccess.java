@@ -45,6 +45,7 @@ public final class DataAccess {
             values.put("oldPrice", product.oldPrice);
             values.put("currentPrice", product.currentPrice);
             values.put("category", product.category);
+            values.put("imageUrl", product.imageUrl);
             ApiFuture<WriteResult> writeResult = database.collection("Products").document(product.sku).set(values);
 
             try {

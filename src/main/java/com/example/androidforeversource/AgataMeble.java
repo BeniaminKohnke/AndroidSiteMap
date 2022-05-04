@@ -23,6 +23,8 @@ public class AgataMeble extends SiteMap {
             Xsoup.compile("//p[@class='m-typo_tertiary']//text()");
     private final XPathEvaluator productCategoryXPath =
             Xsoup.compile("//li[@class='m-breadcrumb_item' or @class='m-breadcrumb_item m-breadcrumb_preLast']/a/text()");
+    private final  XPathEvaluator imageAddressXPath =
+            Xsoup.compile("//div[@id='js-offerGallery']//img/@src");
 
     public AgataMeble(){
         super("AgataMeble", "https://www.agatameble.pl");
@@ -48,8 +50,14 @@ public class AgataMeble extends SiteMap {
             var categories = productCategoryXPath.evaluate(document).list();
             var fullCategory = new StringBuilder();
             for (var category : categories) {
-                fullCategory.append(category + ";");
+                fullCategory.append(category).append(";");
             }
+
+            var imageUrl = imageAddressXPath.evaluate(document).get();
+            if(imageUrl != null && !imageUrl.isEmpty()){
+                product.imageUrl = shopAddress + imageUrl;
+            }
+
             product.category = fullCategory.toString();
         } catch (Exception e) {
 
