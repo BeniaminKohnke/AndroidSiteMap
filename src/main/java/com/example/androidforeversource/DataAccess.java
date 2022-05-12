@@ -3,7 +3,6 @@ package com.example.androidforeversource;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
-import com.google.firebase.database.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,13 +11,6 @@ import java.util.concurrent.ExecutionException;
 
 public final class DataAccess {
     private Firestore database;
-    private final DatabaseReference.CompletionListener listener = (databaseError, databaseReference) -> {
-        if (databaseError != null) {
-            System.out.println("Data could not be saved " + databaseError.getMessage());
-        } else {
-            System.out.println("Data saved successfully.");
-        }
-    };
 
     public DataAccess(){
         try {
@@ -37,7 +29,7 @@ public final class DataAccess {
         }
     }
 
-    public void SaveOrUpdateProduct(Product product){
+    public void saveOrUpdateProduct(Product product){
         if(product != null) {
             var values = new HashMap<String, Object>();
             values.put("name", product.name);

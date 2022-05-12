@@ -34,7 +34,7 @@ public abstract class SiteMap {
         for (var address : productsAddresses) {
             try {
                 var product = scrapPage(address);
-                database.SaveOrUpdateProduct(product);
+                database.saveOrUpdateProduct(product);
             } catch (Exception e) {
 
             }
