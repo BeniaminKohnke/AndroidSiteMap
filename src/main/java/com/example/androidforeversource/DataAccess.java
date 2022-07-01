@@ -42,9 +42,7 @@ public final class DataAccess {
 
             try {
                 System.out.println("Update time : " + writeResult.get().getUpdateTime());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }

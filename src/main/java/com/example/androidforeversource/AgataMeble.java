@@ -59,7 +59,7 @@ public class AgataMeble extends SiteMap {
             }
 
             product.category = fullCategory.toString();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -74,24 +74,22 @@ public class AgataMeble extends SiteMap {
             for (var address : categoriesAddresses) {
                 try{
                     var nextPageUrl = shopAddress + address;
-                    do{
-                        var document = getHTMLDocument(nextPageUrl, 30000);
-                        var urls = addressXPath.evaluate(document).list();
-                        if(urls != null) {
-                            for(var url : urls){
-                                System.out.println("NEW PRODUCT:" + url);
-                                addresses.add(shopAddress + url);
-                            }
+                    var document = getHTMLDocument(nextPageUrl, 30000);
+                    var urls = addressXPath.evaluate(document).list();
+                    if(urls != null) {
+                        for(var url : urls){
+                            System.out.println("NEW PRODUCT:" + url);
+                            addresses.add(shopAddress + url);
                         }
+                    }
 
-                        //Because of database capacity we shouldn't scrape every page
-                        nextPageUrl = null;//nextPageXPath.evaluate(document).get();
-                    }while(nextPageUrl != null);
-                } catch (Exception e) {
+                    //Because of database capacity we shouldn't scrape every page
+                    nextPageUrl = null;//nextPageXPath.evaluate(document).get();
+                } catch (Exception ignored) {
 
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 

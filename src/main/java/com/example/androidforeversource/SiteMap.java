@@ -35,7 +35,7 @@ public abstract class SiteMap {
             try {
                 var product = scrapPage(address);
                 database.saveOrUpdateProduct(product);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
         }
@@ -50,7 +50,7 @@ public abstract class SiteMap {
                     .escapeMode(Entities.EscapeMode.xhtml)
                     .syntax(Document.OutputSettings.Syntax.html)
                     .charset(StandardCharsets.UTF_8);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
 
         }
         return document;
